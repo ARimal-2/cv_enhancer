@@ -13,6 +13,7 @@ from parser import extract_text
 from ai_engine import improve_resume
 from ats_matcher import calculate_similarity
 from write_cv import render_write_cv
+from cv_extraction_ui import render_cv_extraction
 
 # ─────────────────────────────────────────────
 # Page config
@@ -171,7 +172,8 @@ with st.sidebar:
         "- 📄 **PDF Parser** — pdfplumber\n"
         "- 🤖 **AI** — Groq or Ollama\n"
         "- 📊 **ATS** — scikit-learn TF-IDF\n"
-        "- ✍️ **CV Writer** — AI-assisted drafting"
+        "- ✍️ **CV Writer** — AI-assisted drafting\n"
+        "- 📦 **CV Extractor** — AI structured data"
     )
 
 # ─────────────────────────────────────────────
@@ -196,7 +198,11 @@ st.markdown(
 # ─────────────────────────────────────────────
 # Tabs
 # ─────────────────────────────────────────────
-tab_enhancer, tab_writer = st.tabs(["📄  CV Enhancer", "✍️  Write CV with AI"])
+tab_enhancer, tab_writer, tab_extractor = st.tabs([
+    "📄  CV Enhancer", 
+    "✍️  Write CV with AI", 
+    "📦  CV Extractor"
+])
 
 
 # ══════════════════════════════════════════════
@@ -317,6 +323,15 @@ with tab_writer:
         language=language,
         target_role=target_role,
         jd_text=jd_for_cv,
+    )
+
+# ══════════════════════════════════════════════
+# Tab 3 — CV Extractor
+# ══════════════════════════════════════════════
+with tab_extractor:
+    render_cv_extraction(
+        provider=provider,
+        groq_api_key=groq_api_key
     )
 
 # ─────────────────────────────────────────────
