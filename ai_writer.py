@@ -10,11 +10,13 @@ OLLAMA_API_URL = "http://localhost:11434/api/generate"
 OLLAMA_MODEL   = "phi3"
 
 SECTION_CONTEXT = {
+    "Personal Info":         "personal identity and contact details",
     "Summary":               "a professional summary / objective statement (2–4 sentences)",
-    "Skills":                "a skills list: technical tools, languages, frameworks, soft skills",
-    "Experience / Projects": "work experience or projects with impact-driven bullet points",
-    "Education":             "educational background with institution, degree, and dates",
-    "Certifications":        "professional certifications, online courses, and achievements",
+    "Skills":                "a skills list: technical tools, languages, frameworks, and grouped skills",
+    "Experience / Projects": "work experience or projects with CAR-style (Challenge, Action, Result) impact-driven bullet points",
+    "Education":             "educational background formatted professionally with institution and degree",
+    "Certifications":        "professional certifications and online courses formatted professionally",
+    "Languages":             "language proficiency levels (e.g., 'English – Professional, Nepali – Native')",
 }
 
 
@@ -22,19 +24,66 @@ def _build_prompt(section_name, current_text, role, language):
     lang_note  = "Respond in Nepali." if language == "Nepali" else "Respond in English."
     role_note  = f"Target role: **{role.strip()}**." if role.strip() else "No specific target role."
     ctx        = SECTION_CONTEXT.get(section_name, "a CV section")
-    existing = (
-        f"Already written:\n\"\"\"\n{current_text.strip()}\n\"\"\"\nDo NOT repeat the above."
+    existing   = (
+        f"Input text to enhance:\n\"\"\"\n{current_text.strip()}\n\"\"\"\n"
         if current_text.strip() else "Nothing written yet for this section."
     )
-    return (
-        f"{lang_note}\n{role_note}\n\n"
-        f"You are an expert CV writer. Generate suggestions for the **{section_name}** section.\n"
-        f"This section is: {ctx}.\n{existing}\n\n"
-        f"Return exactly 4–5 ATS-friendly bullet points.\n"
-        f"Each bullet starts with '• ', is one standalone sentence, uses strong action verbs, "
-        f"includes metrics where possible, and is under 25 words.\n"
-        f"Return ONLY the bullet points — no headings or extra text."
-    )
+    
+    base_instructions = f"{lang_note}\n{role_note}\n\n"
+    base_instructions += f"You are an expert CV writer. Your task is to ENHANCE the user's input for the **{section_name}** section.\n"
+    base_instructions += f"This section is: {ctx}.\n{existing}\n\n"
+
+    if section_name == "Summary":
+        prompt = (
+            f"{base_instructions}"
+            f"Please rewrite the summary into 2-4 compelling sentences that highlight value. "
+            f"Use a professional tone and ensure it is ATS-friendly. "
+            f"Return ONLY the enhanced summary text."
+        )
+    elif section_name == "Experience / Projects":
+        prompt = (
+            f"{base_instructions}"
+            f"Convert the input into CAR-style (Challenge, Action, Result) bullet points. "
+            f"Each bullet should start with '• ', use strong action verbs, and include metrics where possible. "
+            f"Return exactly 3-5 high-impact bullet points. "
+            f"Return ONLY the bullet points."
+        )
+    elif section_name == "Skills":
+        prompt = (
+            f"{base_instructions}"
+            f"Organize these skills into logical groups (e.g. Languages, Frameworks, Tools). "
+            f"Polish the names and ensure they are professional. "
+            f"Return the polished skills, preferably as a clean list or grouped text."
+        )
+    elif section_name == "Education":
+        prompt = (
+            f"{base_instructions}"
+            f"Create a polished, professional education entry based on the input. "
+            f"Ensure common degree names and institution names are formatted correctly. "
+            f"Return ONLY the polished entry."
+        )
+    elif section_name == "Certifications":
+        prompt = (
+            f"{base_instructions}"
+            f"Format these certifications professionally. "
+            f"Return ONLY the polished names."
+        )
+    elif section_name == "Languages":
+        prompt = (
+            f"{base_instructions}"
+            f"Format the languages with proficiency levels (e.g., 'English – Professional, Nepali – Native'). "
+            f"Return ONLY the formatted list."
+        )
+    else:
+        prompt = (
+            f"{base_instructions}"
+            f"Return exactly 4–5 ATS-friendly bullet points.\n"
+            f"Each bullet starts with '• ', is one standalone sentence, uses strong action verbs, "
+            f"includes metrics where possible, and is under 25 words.\n"
+            f"Return ONLY the bullet points — no headings or extra text."
+        )
+    
+    return prompt
 
 
 def _groq_error(response):
