@@ -16,7 +16,7 @@ OLLAMA_MODEL = "phi3"
 
 # ── Groq settings ───────────────────────────────────────────────────────────
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-GROQ_MODEL = "llama3-8b-8192"   # free tier model; supports the same prompts
+GROQ_MODEL = "llama-3.1-8b-instant"   # current free-tier fast model on Groq
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -103,9 +103,14 @@ def _call_groq(resume_text: str, api_key: str) -> str:
     except requests.exceptions.Timeout:
         return "❌ **Timeout:** Groq API took too long. Please try again."
     except requests.exceptions.HTTPError as exc:
+        # Try to surface the actual error message from Groq's response body
+        try:
+            groq_error = response.json().get("error", {}).get("message", str(exc))
+        except Exception:
+            groq_error = str(exc)
         if response.status_code == 401:
             return "❌ **Invalid Groq API Key.** Please check and re-enter your key in the sidebar."
-        return f"❌ **Groq API Error ({response.status_code}):** {exc}"
+        return f"❌ **Groq API Error ({response.status_code}):** {groq_error}"
     except Exception as exc:
         return f"❌ **Unexpected Error:** {exc}"
 
