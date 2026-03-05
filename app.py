@@ -76,14 +76,14 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     text-transform: uppercase; color: #a78bfa; margin-bottom: 0.5rem;
 }
 
-/* Glass card */
-.glass-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 16px;
-    padding: 1.4rem 1.75rem;
+/* Glass card & Bordered Containers */
+.glass-card, [data-testid="stVerticalBlockBorderWrapper"] {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 16px !important;
+    padding: 1.4rem 1.75rem !important;
     backdrop-filter: blur(10px);
-    margin-bottom: 1rem;
+    margin-bottom: 1rem !important;
 }
 
 /* Score badge */

@@ -472,46 +472,38 @@ def render_write_cv(provider, groq_api_key, language, target_role, jd_text):
 
     # 1. Personal Info
     with st.container(border=True): 
-        st.markdown('<div class="glass-card" style="border:none; padding:1.2rem;">', unsafe_allow_html=True)
         _render_personal_info()
-        st.markdown('</div>', unsafe_allow_html=True)
 
     # 2. Professional Summary
-    st.markdown('<div class="glass-card" style="padding:1.2rem;">', unsafe_allow_html=True)
-    _render_section("summary", "📋 Professional Summary (mandatory) *", 
-                    "Write 2–4 sentences about your career goals and key strengths…",
-                    target_role, language, provider, groq_api_key, jd_text)
-    st.markdown('</div>', unsafe_allow_html=True)
+    with st.container(border=True):
+        _render_section("summary", "📋 Professional Summary (mandatory) *", 
+                        "Write 2–4 sentences about your career goals and key strengths…",
+                        target_role, language, provider, groq_api_key, jd_text)
 
     # 3. Technical Skills
-    st.markdown('<div class="glass-card" style="padding:1.2rem;">', unsafe_allow_html=True)
-    _render_section("skills", "🛠 Technical Skills", 
-                    "Python, SQL, AWS, Machine Learning, Docker...",
-                    target_role, language, provider, groq_api_key, jd_text)
-    st.markdown('</div>', unsafe_allow_html=True)
+    with st.container(border=True):
+        _render_section("skills", "🛠 Technical Skills", 
+                        "Python, SQL, AWS, Machine Learning, Docker...",
+                        target_role, language, provider, groq_api_key, jd_text)
 
     # 4. Experience / Projects
-    st.markdown('<div class="glass-card" style="padding:1.2rem;">', unsafe_allow_html=True)
-    _render_repeating_section("experience", target_role, language, provider, groq_api_key)
-    st.markdown('</div>', unsafe_allow_html=True)
+    with st.container(border=True):
+        _render_repeating_section("experience", target_role, language, provider, groq_api_key)
 
     # 5. Education
-    st.markdown('<div class="glass-card" style="padding:1.2rem;">', unsafe_allow_html=True)
-    _render_repeating_section("education", target_role, language, provider, groq_api_key)
-    st.markdown('</div>', unsafe_allow_html=True)
+    with st.container(border=True):
+        _render_repeating_section("education", target_role, language, provider, groq_api_key)
 
     # 6 & 7. Certs & Languages
     col_a, col_b = st.columns(2)
     with col_a:
-        st.markdown('<div class="glass-card" style="height:100%; padding:1.2rem;">', unsafe_allow_html=True)
-        _render_section("certifications", "🏆 Certifications", "AWS Certified Cloud Practitioner...",
-                        target_role, language, provider, groq_api_key, jd_text)
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            _render_section("certifications", "🏆 Certifications", "AWS Certified Cloud Practitioner...",
+                            target_role, language, provider, groq_api_key, jd_text)
     with col_b:
-        st.markdown('<div class="glass-card" style="height:100%; padding:1.2rem;">', unsafe_allow_html=True)
-        _render_section("languages", "🌐 Languages", "English – Professional, Nepali – Native",
-                        target_role, language, provider, groq_api_key, jd_text)
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            _render_section("languages", "🌐 Languages", "English – Professional, Nepali – Native",
+                            target_role, language, provider, groq_api_key, jd_text)
 
     # Export
     st.markdown("---")
